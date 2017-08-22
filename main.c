@@ -24,24 +24,22 @@ ISR(INT0_vect)
 	i2c_start(MAX30100_W);
 	i2c_write(0x00);
 	i2c_rep_start(MAX30100_R);
-	uint8_t ret = i2c_readNak();
-	printf("current state 0x%02x\r\n", ret);
+	uint8_t state = i2c_readNak();
+	printf("current state 0x%02x\r\n", state);
 	i2c_stop();
-
-//	printf("temp is ready to read\r\n");
 
 	i2c_start(MAX30100_W);
 	i2c_write(MAX30100_TINT);
 	i2c_rep_start(MAX30100_R);
-	ret = i2c_read(0);
-	printf("curr temp int 0x%02x\r\n", ret);
+	uint8_t tint = i2c_read(0);
 
 	i2c_rep_start(MAX30100_W);
 	i2c_write(MAX30100_TFRAC);
 	i2c_rep_start(MAX30100_R);
-	ret = i2c_read(0);
-	printf("curr temp frac 0x%02x\r\n", ret);
+	uint8_t tfrac = i2c_read(0);
 	i2c_stop();
+
+	printf("curr temp %d,%d\r\n", tint, (tfrac/16*10));
 }
 
 int main(void)
